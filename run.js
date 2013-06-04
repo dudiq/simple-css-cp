@@ -4,10 +4,10 @@ define(function (require) {
         var simplePicker = require("simple-css-cp");
 
         var elPicker = new simplePicker($("#elPicker"), {
-            cssTheme: "simple-css-cp-small",
+            //cssTheme: "simple-css-cp-small",
             //showButtons: false,
-            showInput: false,
-            showPreview: false,
+            showInput: true,
+            //showPreview: false,
             onChange: function(){
                 console.log("color", elPicker.getColor());
             }}

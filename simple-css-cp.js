@@ -164,7 +164,7 @@ define(function (require) {
         if (isNaN(hsla.a)){
             return getColorFromHSL(hsla);
         } else {
-            return "hsla(" + hsla.h + ", " + hsla.s + ", " + hsla.l + "," + hsla.a+ ")";
+            return "hsla(" + hsla.h + ", " + hsla.s + ", " + hsla.l + ", " + hsla.a+ ")";
         }
     }
 
@@ -176,7 +176,7 @@ define(function (require) {
         if (isNaN(rgba.a)){
             return getColorFromRGB(rgba);
         } else {
-            return "rgba(" + rgba.r + ", " + rgba.g + ", " + rgba.b + "," + rgba.a +")";
+            return "rgba(" + rgba.r + ", " + rgba.g + ", " + rgba.b + ", " + rgba.a +")";
         }
     }
     
