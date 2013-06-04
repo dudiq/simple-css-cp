@@ -413,7 +413,7 @@ define(function (require) {
         if (!checkValue || checkValue == "initial" || (checkValue == "transparent" && color != checkValue) || checkValue == "none"){
 
         } else {
-            ret = getColorByMatch((/(rgba)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*0?\.(\d{1,})\)/ig), checkValue);
+            ret = getColorByMatch((/(rgba)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*0?\.(\d+)\)/ig), checkValue);
             if (!ret){
                 ret = getColorByMatch((/(rgb)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/ig), checkValue);
             }
