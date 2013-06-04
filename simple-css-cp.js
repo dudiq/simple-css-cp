@@ -157,14 +157,14 @@ define(function (require) {
     }
 
     function getColorFromHSL(hsl){
-        return "hsl(" + hsl.h + ", " + hsl.s + ", " + hsl.l + ")";
+        return "hsl(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%)";
     }
 
     function getColorFromHSLA(hsla){
         if (isNaN(hsla.a)){
             return getColorFromHSL(hsla);
         } else {
-            return "hsla(" + hsla.h + ", " + hsla.s + ", " + hsla.l + ", " + hsla.a+ ")";
+            return "hsla(" + hsla.h + ", " + hsla.s + "%, " + hsla.l + "%, " + hsla.a+ ")";
         }
     }
 
