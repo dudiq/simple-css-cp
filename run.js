@@ -5,7 +5,7 @@ define(function (require) {
 
         var elPicker = new simplePicker($("#elPicker"), {
             cssTheme: "simple-css-cp-small",
-            showButtons: false,
+            //showButtons: false,
             showInput: false,
             showPreview: false,
             onChange: function(){
