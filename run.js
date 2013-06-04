@@ -13,7 +13,7 @@ define(function (require) {
             }}
         );
 
-        elPicker.show("yellow");
+        elPicker.show("hsla(10, 40%, 50%, 1)");
 //        elPicker.setColor("blue");
 //        elPicker.setColor("black");
 //        elPicker.setColor("white");

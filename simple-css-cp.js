@@ -104,47 +104,38 @@ define(function (require) {
     }
 
     function rgb2hsl(r, g, b) {
+        var r1 = r / 255;
+        var g1 = g / 255;
+        var b1 = b / 255;
 
-        var h, s, l;
-        var min, max;
-        var delta;
-
-        if (r > g) {
-            max = Math.max(r, b);
-            min = Math.min(g, b);
-        } else {
-            max = Math.max(g, b);
-            min = Math.min(r, b);
+        var maxColor = Math.max(r1,g1,b1);
+        var minColor = Math.min(r1,g1,b1);
+        //Calculate L:
+        var l = (maxColor + minColor) / 2 ;
+        var s = 0;
+        var h = 0;
+        if(maxColor != minColor){
+            //Calculate S:
+            if(l < 0.5){
+                s = (maxColor - minColor) / (maxColor + minColor);
+            }else{
+                s = (maxColor - minColor) / (2.0 - maxColor - minColor);
+            }
+            //Calculate H:
+            if(r1 == maxColor){
+                h = (g1-b1) / (maxColor - minColor);
+            }else if(g1 == maxColor){
+                h = 2.0 + (b1 - r1) / (maxColor - minColor);
+            }else{
+                h = 4.0 + (r1 - g1) / (maxColor - minColor);
+            }
         }
 
-        l = (max + min) / 2.0;
-
-        if (max == min) {
-            s = 0.0;
-            h = 0.0;
-        } else {
-            delta = (max - min);
-
-            if (l < 128) {
-                s = 255 * delta / (max + min);
-            } else {
-                s = 255 * delta / (511 - max - min);
-            }
-            if (r == max) {
-                h = (g - b) / delta;
-            } else if (g == max) {
-                h = 2 + (b - r) / delta;
-            } else {
-                h = 4 + (r - g) / delta;
-            }
-
-            h = h * 42.5;
-
-            if (h < 0) {
-                h += 255;
-            } else if (h > 255) {
-                h -= 255;
-            }
+        l = l * 100;
+        s = s * 100;
+        h = h * 60;
+        if(h<0){
+            h += 360;
         }
         return {h: Math.round(h), s: Math.round(s), l: Math.round(l)};
     }
@@ -290,11 +281,8 @@ define(function (require) {
 
     function onAlphaChoose(pos, val, y, drop){
         (isNaN(val)) && (val = 100);
-        val += 5;
-        (val < 10) && (val = 0);
-        (val > 100) && (val = 100);
 
-        this.alpha = val;
+        this.alpha = Math.round(val);
 
         this.alphaChooser.css("left", pos.left);
 
@@ -375,9 +363,9 @@ define(function (require) {
             offset = el.offset();
             width = el.width();
             height = el.height();
+            self.element.focus();
             onMouseSelect.call(self, offset, ev, width, height, dx, callback);
             ev.preventDefault();
-            self.element.focus();
         });
         $doc.on("mousemove", self.documentMouseMove);
     }
@@ -431,7 +419,7 @@ define(function (require) {
                 var color = input.val();
                 var rgba = self.str2rgba(color);
                 if (rgba){
-                    self.setColor(getColorFromRGBA(rgba));
+                    self.setColor(color);
                 }
             }
         });
@@ -489,30 +477,27 @@ define(function (require) {
 
         var rgb = hsv2rgb(this.hue, this.saturation, this.value);
         var alpha = this.alpha / 100;
+        rgb.a = alpha;
+
+        var hasAlpha = (!isNaN(alpha) && (alpha != 1)) ? true : false;
 
         switch (this.type){
             case "word" :
-            case "#": color = rgb2hex(rgb.r, rgb.g, rgb.b); break;
+            case "#":
+                color = (hasAlpha) ? getColorFromRGBA(rgb) : rgb2hex(rgb.r, rgb.g, rgb.b);
+                break;
 
             case "hsl":
-                var hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
-                color = getColorFromHSL(hsl);
-                break;
             case "hsla":
-                var hsla = rgb2hsl(rgb.r, rgb.g, rgb.b);
-                hsla.a = alpha;
-                color = getColorFromHSLA(hsla);
+                var hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
+                hsl.a = alpha;
+                color = (hasAlpha) ? getColorFromHSLA(hsl) : getColorFromHSL(hsl);
                 break;
-            case "rgb" : color = getColorFromRGB(rgb); break;
-            case "rgba" : rgb.a = alpha; color = getColorFromRGBA(rgb); break;
+            case "rgb":
+            case "rgba":
+                color = (hasAlpha) ? getColorFromRGBA(rgb) : getColorFromRGB(rgb);
+                break;
         }
-        if (alpha != 1){
-            switch (this.type){
-                case "word" :
-                case "#": rgb.a = alpha; color = getColorFromRGBA(rgb); break;
-            }
-        }
-
         return color;
     };
 
