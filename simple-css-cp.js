@@ -206,7 +206,7 @@ define(function (require) {
         this.previewAfter = element.find(".area-preview-after-select");
         this.previewBefore = element.find(".area-preview-before-select");
         this.previewBefore.on("click", function(){
-            self.setColor($(this).css("background-color"));
+            self.setColor($(this).data("color"));
         });
 
         this.chooser = element.find(".workarea-chooser");
@@ -438,7 +438,7 @@ define(function (require) {
     }
     
     var picker = function(el, opt){
-        this.parent = el;
+        this.parent = $(el);
         this.options = opt || {};
 
         init.call(this);
@@ -461,7 +461,11 @@ define(function (require) {
 
     p.setColorToBefore = function(color){
         var col = this.str2rgba(color);
-        setColorToElement(this.previewBefore, getColorFromRGBA(col));
+        if (col){
+            this.previewBefore.data("color", color);
+            setColorToElement(this.previewBefore, color);
+        }
+
     };
 
     p.setColor = function(color, callEv){
@@ -522,6 +526,10 @@ define(function (require) {
 
     p.str2rgba = function(val){
         return str2rgba.call(this, val);
+    };
+
+    p.one = function(ev, callback){
+        this.options[ev] = callback;
     };
 
     p.destroy = function(){
