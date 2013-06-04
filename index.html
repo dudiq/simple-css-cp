@@ -1,0 +1,58 @@
+<html>
+<head>
+
+    <script data-main="/main" type="text/javascript" src="requirejs/requirejs-min.js"></script>
+    <script>
+        require.config({
+            baseUrl: "/js/AC/simple-libs/simple-css-cp/",
+            paths: {
+                "some": "some/v1.0"
+            },
+            waitSeconds: 15
+        });
+    </script>
+    <script type="text/javascript" src="jquery-1.9.1.js"></script>
+
+    <link type="text/css" href="simple-css-cp.css" rel="stylesheet"/>
+    <style>
+        html, body{
+            margin: 0;
+            padding: 0;
+        }
+        html, body, table
+        {
+            font-size: 12px;
+            font-family: Tahoma, Verdana,"Lucinda Console","Arial","Helvetica","sans-serif";
+        }
+        .divTree{
+            width:300px; height: 300px;
+            border: 1px solid gray;
+            display: block;
+            margin-top: 10px;
+            position: relative;
+        }
+        .btn{
+            cursor: pointer;
+            -moz-user-select:none; -khtml-user-select:none; -webkit-user-select:none; user-select: none;
+            padding: 4px;
+            border: 1px solid gray;
+            border-radius: 4px;
+            width: 100px;
+        }
+        span.btn:hover{
+            background-color: silver;
+        }
+
+        table.testCss:hover{
+            background: red;
+        }
+    </style>
+</head>
+<body unselectable="on">
+
+<div id="elPicker" style="position: relative; left: 200px; top: 200px;"></div>
+
+
+
+</body>
+</html>
