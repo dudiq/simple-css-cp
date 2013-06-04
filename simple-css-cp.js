@@ -223,12 +223,17 @@ define(function (require) {
         this.type = "#";
 
         (opt.showInput !== false) && bindInput.call(this, this.input);
+        showPreview.call(this, opt.showPreview !== false);
 
         (opt.cssTheme) && (theme.call(this, opt.cssTheme));
 
         this.parent.append(this.element);
     }
 
+    function showPreview(val){
+        var preview = this.element.find(".area-preview");
+        val ? preview.show() : preview.hide();
+    }
 
     function theme(css){
         this.element.addClass(css);

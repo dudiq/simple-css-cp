@@ -6,12 +6,14 @@ define(function (require) {
         var elPicker = new simplePicker($("#elPicker"), {
             cssTheme: "simple-css-cp-small",
             showButtons: false,
+            showInput: false,
+            showPreview: false,
             onChange: function(){
                 console.log("color", elPicker.getColor());
             }}
         );
 
-        elPicker.show();
+        elPicker.show("yellow");
 //        elPicker.setColor("blue");
 //        elPicker.setColor("black");
 //        elPicker.setColor("white");
