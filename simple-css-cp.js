@@ -310,7 +310,7 @@ define(function (require) {
         if (this.oldColor != newColor){
             (callEv !== false) && this.options.onChange && this.options.onChange(newColor);
             if (!this.input.is(":focus")){
-                this.input.val(this.getColor());
+                this.input.val(newColor);
             }
 
         }
