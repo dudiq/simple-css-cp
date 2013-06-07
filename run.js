@@ -14,6 +14,7 @@ define(function (require) {
         );
 
         elPicker.show("hsla(10, 40%, 50%, 1)");
+        console.log(elPicker.str2rgba("red"));
 //        elPicker.setColor("blue");
 //        elPicker.setColor("black");
 //        elPicker.setColor("white");

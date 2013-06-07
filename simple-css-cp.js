@@ -509,9 +509,7 @@ define(function (require) {
 
     p.rgb2hex = rgb2hex;
 
-    p.str2rgba = function(val){
-        return str2rgba.call(this, val);
-    };
+    p.str2rgba = str2rgba;
 
     p.one = function(ev, callback){
         this.options[ev] = callback;
