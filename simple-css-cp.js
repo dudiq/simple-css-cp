@@ -516,8 +516,8 @@ define(function (require) {
     };
 
     p.destroy = function(){
-        $(document).off("mouseup", this.documentMouseUp);
-        $(document).off("mousemove", this.documentMouseMove);
+        this.documentMouseUp && $(document).off("mouseup", this.documentMouseUp);
+        this.documentMouseMove && $(document).off("mousemove", this.documentMouseMove);
 
         this.helper.remove();
         this.element.remove();
