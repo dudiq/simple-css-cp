@@ -6,6 +6,11 @@ jquery color picker
 CSS3 color picker.
 without any png images, created by linear-gradient() style.
 
+if you need other template, just add new css rules for theme.
+
+support: 
+ color types: rgba, rgb, hsla, hsl, #hex, word.
+ browsers: all modern + IE8, 9
 
 how to use:
 
@@ -36,6 +41,8 @@ each instance of color picker have public methods:
 .destroy() - remove color picker from DOM and destroy itself
 
 .one(eventName, callback) - drop old callback and bind new. for example .one("onChange", function(color){});
+eventNames:
+"onChange", "onApply", "onApply", "onHide"
 
 .str2rgba("yellow") - return rgba object, like {r:10, g:10, b:255, a: 0.5}
 
@@ -46,6 +53,12 @@ each instance of color picker have public methods:
 .rgb2hsv({r:10, g:10, b:10}) - return hsv object
 
 .hsv2rgb({h: 10, s: 98, v: 1}) - return rgb object
+
+.hsl2rgb("#ffffff") - return rgb object
+
+.str2hex("yellow") - return hex color
+
+.hex2rgb("#0000ff") - return rgb object 
 
 .getColor() - return string color of selected value in picker
 
