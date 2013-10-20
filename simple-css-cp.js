@@ -26,10 +26,19 @@ define(function (require) {
                     "<div class='workarea-chooser'/>" +
                 "</div>" +
                 "<div class='slider-hue'>" +
+                    "<div class='slider-hue-ie'>" +
+                        "<div class='slider-hue-ie-17'/>" +
+                        "<div class='slider-hue-ie-33'/>" +
+                        "<div class='slider-hue-ie-50'/>" +
+                        "<div class='slider-hue-ie-67'/>" +
+                        "<div class='slider-hue-ie-83'/>" +
+                        "<div class='slider-hue-ie-100'/>" +
+                    "</div>" +
                     "<div class='slider-hue-chooser'/>" +
                 "</div>" +
             "</div>" +
-            "<div class='slider-alpha'>" +
+            "<div class='slider-alpha-wrap'>" +
+                "<div class='slider-alpha'/>" +
                 "<div class='slider-alpha-chooser'/>" +
             "</div>" +
             "<div>" +
@@ -38,6 +47,34 @@ define(function (require) {
             "<div class='area-buttons'><span data-action='apply'>Apply</span><span data-action='apply'>Cancel</span></div>" +
         "</div>";
 
+    var compute = window.getComputedStyle;
+    var $doc;
+    var $body;
+
+    // Private methods
+
+    function str2Hex(color) {
+        try {
+        var body  = createPopup().document.body,
+            range = body.createTextRange();
+        body.style.color = color;
+        var value = range.queryCommandValue("ForeColor");
+        value = ((value & 0x0000ff) << 16) | (value & 0x00ff00) | ((value & 0xff0000) >>> 16);
+        value = value.toString(16);
+        return "#000000".slice(0, 7 - value.length) + value;
+        }catch(e){
+
+        }
+    }
+
+    function hex2rgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
 
     function hsv2rgb(h, s, v){
         h /= 60;
@@ -103,6 +140,38 @@ define(function (require) {
         };
     }
 
+
+    function hsl2rgb(h, s, l){
+
+        var r, g, b;
+
+        s = s/100;
+        l = l/100;
+        h = h/360;
+
+        function hue2rgb(p, q, t) {
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        if(s === 0) {
+            r = g = b = l; // achromatic
+        }
+        else {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+    }
+
     function rgb2hsl(r, g, b) {
         var r1 = r / 255;
         var g1 = g / 255;
@@ -147,6 +216,9 @@ define(function (require) {
         return "#" + hex(r) + hex(g) + hex(b);
     }
 
+    // methods for convert colors to string for dom elements
+    //
+
     function getColorFromHSL(hsl){
         return "hsl(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%)";
     }
@@ -170,14 +242,35 @@ define(function (require) {
             return "rgba(" + rgba.r + ", " + rgba.g + ", " + rgba.b + ", " + rgba.a +")";
         }
     }
-    
+
+
     function setColorToElement(el, color){
-        el.css("background-color", "none");
-        el.css("background-color", color);
+        if (!compute){
+            setColorToElement = function (el, color){
+                // need support for alpha channel
+                el.css({"background-color": "none", "opacity": "auto"});
+                var ret = getRGBA_byRules(color);
+                if (ret){
+                    var newColor = getColorFromRGB(ret);
+                    el.css({"background-color": newColor, "opacity": ret.a});
+                } else {
+                    el.css("background-color", color);
+                }
+            }
+        } else {
+            setColorToElement = function (el, color){
+                el.css("background-color", "none");
+                el.css("background-color", color);
+            };
+            setColorToElement(el, color);
+        }
     }
 
 
     function init(){
+        !$doc && ($doc = $(document));
+        !$body && ($body = $(document.body));
+
         var opt = this.options;
         var element = this.element = $(template) || $(opt.template);
         element.hide();
@@ -188,7 +281,7 @@ define(function (require) {
         bindDocumentEvents.call(this);
 
         bindValueChoose.call(this, element.find(".choose-color"), onColorChoose);
-        bindValueChoose.call(this, element.find(".slider-alpha"), onAlphaChoose);
+        bindValueChoose.call(this, element.find(".slider-alpha-wrap"), onAlphaChoose);
         bindValueChoose.call(this, element.find(".slider-hue"), onHueChoose, 360);
 
         this.helper = $("<div class='simple-css-helper'/>");
@@ -225,7 +318,7 @@ define(function (require) {
 
     function showPreview(val){
         var preview = this.element.find(".area-preview");
-        val ? preview.show() : preview.hide();
+        val ? preview.css('display', 'inline-block') : preview.hide();
     }
 
     function theme(css){
@@ -307,6 +400,7 @@ define(function (require) {
 
     function onChange(callEv){
         var newColor = this.getColor();
+
         setColorToElement(this.previewAfter, newColor);
 
         if (this.oldColor != newColor){
@@ -346,8 +440,7 @@ define(function (require) {
     }
 
     function bindDocumentEvents() {
-        var $doc = $(document),
-            self = this;
+        var self = this;
         
         if (!this.documentMouseUp) {
             this.documentMouseUp = function(){
@@ -395,30 +488,81 @@ define(function (require) {
         var ret = null;
         if (res){
             ret = {
-                r: res[2] - 0,
-                g: res[3] - 0,
-                b: res[4] - 0
+                a: res[2] - 0,
+                b: res[3] - 0,
+                c: res[4] - 0
             }; 
-            (res[5] !== undefined) && (ret.a = ("0." + res[5]) - 0); 
+            (res[5] !== undefined) && (ret.d = ("0." + res[5]) - 0);
         }
         return ret;
     }
 
+    function processRules(rules, color){
+        var match;
+        var res;
+        for (var i = 0, l = rules.length; i < l; i++){
+            match = getColorByMatch(rules[i], color);
+            if (match){
+                res = match;
+                break;
+            }
+        }
+        return res;
+    }
+
+    function getRGBA_byRules(color) {
+        var res,
+            rgbRules =[
+                /(rgba)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*0?\.(\d+)\)/ig,
+                /(rgb)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/ig
+            ],
+            hslRules = [
+                /(hsla)\((\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*0?\.(\d+)\)/ig,
+                /(hsl)\((\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)/ig
+            ],
+            match;
+
+        match = processRules(rgbRules, color);
+        if (match) {
+            res = {
+                r: match.a,
+                g: match.b,
+                b: match.c,
+                a: match.d
+            }
+        } else {
+            match = processRules(hslRules, color);
+            if (match) {
+                res = hsl2rgb(match.a, match.b, match.c);
+                res.a = match.d;
+            }
+        }
+
+        return res;
+    }
+
     function str2rgba(color){
         color = (color + "").toLowerCase();
-        $(document.body).append(this.helper);
+        var checkValue;
+
+        $body.append(this.helper);
         setColorToElement(this.helper, color);
 
-        var checkValue = window.getComputedStyle(this.helperDOM)['backgroundColor'];
+        if (compute) {
+            checkValue = compute(this.helperDOM)['backgroundColor'];
+        } else {
+            var hexColor = str2Hex(color);
+            var rgbFromHex = hex2rgb(hexColor);
+            checkValue = rgbFromHex && getColorFromRGB(rgbFromHex);
+        }
 
         var ret = null;
-        if (!checkValue || checkValue == "initial" || (checkValue == "transparent" && color != checkValue) || checkValue == "none"){
 
+        if (!checkValue || checkValue == "initial" || (checkValue == "transparent" && color != checkValue) || checkValue == "none"){
+            //try to detect by self
+            ret = getRGBA_byRules(color);
         } else {
-            ret = getColorByMatch((/(rgba)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*0?\.(\d+)\)/ig), checkValue);
-            if (!ret){
-                ret = getColorByMatch((/(rgb)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/ig), checkValue);
-            }
+            ret = getRGBA_byRules(checkValue);
         }
 
         this.helper.detach();
@@ -438,7 +582,9 @@ define(function (require) {
             }
         });
     }
-    
+
+    // Constructor
+
     var picker = function(el, opt){
         this.parent = $(el);
         this.options = opt || {};
@@ -517,6 +663,8 @@ define(function (require) {
 
     p.hsv2rgb = hsv2rgb;
 
+    p.hsl2rgb = hsl2rgb;
+
     p.rgb2hsv = rgb2hsv;
 
     p.rgb2hsl = rgb2hsl;
@@ -525,14 +673,18 @@ define(function (require) {
 
     p.str2rgba = str2rgba;
 
+    p.str2Hex = str2Hex;
+
+    p.hex2rgb = hex2rgb;
+
+
     p.one = function(ev, callback){
         this.options[ev] = callback;
     };
 
     p.destroy = function(){
-        var $doc = $(document); 
-        this.documentMouseUp && $doc.off("mouseup", this.documentMouseUp);
-        this.documentMouseMove && $doc.off("mousemove", this.documentMouseMove);
+        this.documentMouseUp && $doc && $doc.off("mouseup", this.documentMouseUp);
+        this.documentMouseMove && $doc && $doc.off("mousemove", this.documentMouseMove);
 
         this.helper.remove();
         this.element.remove();

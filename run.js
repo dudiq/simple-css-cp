@@ -13,7 +13,8 @@ define(function (require) {
             }}
         );
 
-        elPicker.show("hsla(10, 40%, 50%, 1)");
+        elPicker.show("hsl(10, 40%, 50%)");
+        //hsl(10, 40%, 50%) = rgb(179, 94, 77)
         console.log(elPicker.str2rgba("red"));
 //        elPicker.setColor("blue");
 //        elPicker.setColor("black");
