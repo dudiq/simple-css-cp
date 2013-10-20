@@ -1,6 +1,8 @@
 simple-css-cp
 =============
 
+jQuery, color-picker, javascript, colorpicker, linear-gradient, IE, support
+
 jquery color picker
 
 CSS3 color picker.
@@ -8,9 +10,15 @@ without any png images, created by linear-gradient() style.
 
 if you need other template, just add new css rules for theme.
 
+
+
 support: 
+ 
  color types: rgba, rgb, hsla, hsl, #hex, word.
+ 
  browsers: all modern + IE8, 9
+
+
 
 how to use:
 
