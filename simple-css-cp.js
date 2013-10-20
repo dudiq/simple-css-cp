@@ -51,29 +51,74 @@ define(function (require) {
     var $doc;
     var $body;
 
+
+    // Color object for using
+    // {r: r, g: g, b: b, a: a}. when call toString() -> returns correct structure
+    function ColorObject (obj) {
+        for (var key in obj) {
+            this[key] = obj[key];
+        }
+    }
+
+    ColorObject.prototype.toString = function(){
+        var hasAlpha = !isNaN(this.a);
+        var isRgb = (this.r !== undefined);
+        var isHsv = (this.v !== undefined);
+        var pertange = isRgb ? "" : "%";
+        var prefix = isRgb ? ((hasAlpha) ? "rgba(" : "rgb(") :
+            ((hasAlpha) ? "hsla(" : "hsl(");
+
+        isHsv && (prefix = "hsv(");
+
+        var output = isRgb ? this.r + ", " + this.g + ", " + this.b :
+            this.h + ", " + this.s + "%, " + (isHsv ? this.v : this.l) + "%";
+
+        hasAlpha && (output += ", " + this.a);
+
+        output = prefix + output + ")";
+
+        return output;
+    };
+
     // Private methods
 
-    function str2Hex(color) {
-        try {
-        var body  = createPopup().document.body,
-            range = body.createTextRange();
-        body.style.color = color;
-        var value = range.queryCommandValue("ForeColor");
-        value = ((value & 0x0000ff) << 16) | (value & 0x00ff00) | ((value & 0xff0000) >>> 16);
-        value = value.toString(16);
-        return "#000000".slice(0, 7 - value.length) + value;
-        }catch(e){
+    function str2hex(color) {
+        if (compute){
+            var rgba = this.str2rgba(color);
+            return this.rgb2hex(rgba.r, rgba.g, rgba.b);
+        } else {
+            try {
+                var body  = createPopup().document.body,
+                    range = body.createTextRange();
+                body.style.color = color;
+                var value = range.queryCommandValue("ForeColor");
+                value = ((value & 0x0000ff) << 16) | (value & 0x00ff00) | ((value & 0xff0000) >>> 16);
+                value = value.toString(16);
+                return "#000000".slice(0, 7 - value.length) + value;
+            }catch(e){
 
+            }
         }
     }
 
     function hex2rgb(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
+        if (!result) {
+            (result = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex));
+            if (result) {
+                function dublicate(res){
+                    return res + "" + res;
+                }
+                result[1] = dublicate(result[1]);
+                result[2] = dublicate(result[2]);
+                result[3] = dublicate(result[3]);
+            }
+        }
+        return result ? new ColorObject({
             r: parseInt(result[1], 16),
             g: parseInt(result[2], 16),
             b: parseInt(result[3], 16)
-        } : null;
+        }) : null;
     }
 
     function hsv2rgb(h, s, v){
@@ -96,7 +141,7 @@ define(function (require) {
             case 5: r = v; g = i1; b = i2; break;
         }
 
-        return {r: Math.floor(r*255), g: Math.floor(g*255), b: Math.floor(b*255)};
+        return new ColorObject({r: Math.floor(r*255), g: Math.floor(g*255), b: Math.floor(b*255)});
     }
 
     function rgb2hsv(r, g, b) {
@@ -133,11 +178,11 @@ define(function (require) {
                 h -= 1;
             }
         }
-        return {
+        return new ColorObject({
             h: Math.round(h * 360),
             s: Math.round(s * 100),
             v: Math.round(v * 100)
-        };
+        });
     }
 
 
@@ -169,7 +214,7 @@ define(function (require) {
             b = hue2rgb(p, q, h - 1/3);
         }
 
-        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+        return new ColorObject({ r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) });
     }
 
     function rgb2hsl(r, g, b) {
@@ -206,7 +251,7 @@ define(function (require) {
         if(h<0){
             h += 360;
         }
-        return {h: Math.round(h), s: Math.round(s), l: Math.round(l)};
+        return new ColorObject({h: Math.round(h), s: Math.round(s), l: Math.round(l)});
     }
 
     function rgb2hex(r, g, b){
@@ -219,29 +264,6 @@ define(function (require) {
     // methods for convert colors to string for dom elements
     //
 
-    function getColorFromHSL(hsl){
-        return "hsl(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%)";
-    }
-
-    function getColorFromHSLA(hsla){
-        if (isNaN(hsla.a)){
-            return getColorFromHSL(hsla);
-        } else {
-            return "hsla(" + hsla.h + ", " + hsla.s + "%, " + hsla.l + "%, " + hsla.a+ ")";
-        }
-    }
-
-    function getColorFromRGB(rgb){
-        return "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
-    }
-
-    function getColorFromRGBA(rgba){
-        if (isNaN(rgba.a)){
-            return getColorFromRGB(rgba);
-        } else {
-            return "rgba(" + rgba.r + ", " + rgba.g + ", " + rgba.b + ", " + rgba.a +")";
-        }
-    }
 
 
     function setColorToElement(el, color){
@@ -251,7 +273,7 @@ define(function (require) {
                 el.css({"background-color": "none", "opacity": "auto"});
                 var ret = getRGBA_byRules(color);
                 if (ret){
-                    var newColor = getColorFromRGB(ret);
+                    var newColor = ret.toString();
                     el.css({"background-color": newColor, "opacity": ret.a});
                 } else {
                     el.css("background-color", color);
@@ -339,7 +361,7 @@ define(function (require) {
 
     function setPositionByColor(rgba){
         if (rgba){
-            var hsv = rgb2hsv(rgba.r, rgba.g, rgba.b);
+            var hsv = this.rgb2hsv(rgba.r, rgba.g, rgba.b);
 
             //set chooser position
             var chooserParent = this.chooser.parent();
@@ -355,15 +377,15 @@ define(function (require) {
 
             //set alpha position
             var alphaParentHeight = this.alphaChooser.parent().width();
-            var alpha = rgba.a || 1;
+            var alpha = !isNaN(rgba.a) ? rgba.a : 1;
             onAlphaChoose.call(this, {left: alpha * alphaParentHeight}, rgba.a * 100, 0, true);
         }
     }
 
     function onHueChoose(pos, x, val, drop){
         this.hue = val;
-        var rgb = hsv2rgb(val, 100, 100);
-        var color = getColorFromRGB(rgb);
+        var rgb = this.hsv2rgb(val, 100, 100);
+        var color = rgb.toString();
 
         setColorToElement(this.workareaColor, color);
 
@@ -514,22 +536,24 @@ define(function (require) {
         var res,
             rgbRules =[
                 /(rgba)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*0?\.(\d+)\)/ig,
+                /(rgba)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([0-1])+\)/ig,
                 /(rgb)\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/ig
             ],
             hslRules = [
                 /(hsla)\((\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*0?\.(\d+)\)/ig,
+                /(hsla)\((\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*([0-1])\)/ig,
                 /(hsl)\((\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)/ig
             ],
             match;
 
         match = processRules(rgbRules, color);
         if (match) {
-            res = {
+            res = new ColorObject({
                 r: match.a,
                 g: match.b,
                 b: match.c,
                 a: match.d
-            }
+            });
         } else {
             match = processRules(hslRules, color);
             if (match) {
@@ -551,9 +575,9 @@ define(function (require) {
         if (compute) {
             checkValue = compute(this.helperDOM)['backgroundColor'];
         } else {
-            var hexColor = str2Hex(color);
-            var rgbFromHex = hex2rgb(hexColor);
-            checkValue = rgbFromHex && getColorFromRGB(rgbFromHex);
+            var hexColor = this.str2hex(color);
+            var rgbFromHex = this.hex2rgb(hexColor);
+            checkValue = rgbFromHex && rgbFromHex.toString();
         }
 
         var ret = null;
@@ -624,7 +648,7 @@ define(function (require) {
         var col = this.str2rgba(color);
 
         if (col){
-            setColorToElement(this.previewAfter, getColorFromRGBA(col));
+            setColorToElement(this.previewAfter, col.toString());
 
             setPositionByColor.call(this, col);
 
@@ -635,7 +659,7 @@ define(function (require) {
     p.getColor = function(){
         var color;
 
-        var rgb = hsv2rgb(this.hue, this.saturation, this.value);
+        var rgb = this.hsv2rgb(this.hue, this.saturation, this.value);
         var alpha = this.alpha / 100;
         rgb.a = alpha;
 
@@ -644,18 +668,19 @@ define(function (require) {
         switch (this.type){
             case "word" :
             case "#":
-                color = (hasAlpha) ? getColorFromRGBA(rgb) : rgb2hex(rgb.r, rgb.g, rgb.b);
+                color = (hasAlpha) ? rgb.toString() : this.rgb2hex(rgb.r, rgb.g, rgb.b);
                 break;
 
             case "hsl":
             case "hsla":
-                var hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
-                hsl.a = alpha;
-                color = (hasAlpha) ? getColorFromHSLA(hsl) : getColorFromHSL(hsl);
+                var hsla = this.rgb2hsl(rgb.r, rgb.g, rgb.b);
+                hasAlpha && (hsla.a = alpha);
+                color = hsla.toString();
                 break;
             case "rgb":
             case "rgba":
-                color = (hasAlpha) ? getColorFromRGBA(rgb) : getColorFromRGB(rgb);
+                !hasAlpha && (rgb.a = undefined);
+                color = rgb.toString();
                 break;
         }
         return color;
@@ -673,7 +698,7 @@ define(function (require) {
 
     p.str2rgba = str2rgba;
 
-    p.str2Hex = str2Hex;
+    p.str2hex = str2hex;
 
     p.hex2rgb = hex2rgb;
 
