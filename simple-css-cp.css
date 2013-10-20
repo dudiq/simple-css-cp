@@ -18,7 +18,7 @@
     right: -9999px;
 }
 
-.workarea-chooser{
+.simple-css-color-picker .workarea-chooser{
     position: absolute;
     display: inline-block;
     background-color: red;
@@ -37,7 +37,7 @@
     -ms-border-radius: 2px;
 }
 
-.slider-hue-chooser{
+.simple-css-color-picker .slider-hue-chooser{
     display: inline-block;
     height: 2px;
     background-color: rgba(0,0,0, 0.6);
@@ -47,7 +47,7 @@
     margin-top: -1px;
 }
 
-.slider-alpha-chooser{
+.simple-css-color-picker .slider-alpha-chooser{
     display: inline-block;
     top: -3px;
     bottom: -3px;
@@ -57,7 +57,7 @@
     margin-left: -1px;
 }
 
-.workarea-bt, .workarea-wt{
+.simple-css-color-picker .workarea-bt, .simple-css-color-picker .workarea-wt{
     background-image: -webkit-linear-gradient(top, rgba(0,0,0,0), #000);
     background-image: -moz-linear-gradient(top, rgba(0,0,0,0), #000);
     background-image: -ms-linear-gradient(top, rgba(0,0,0,0), #000);
@@ -68,14 +68,14 @@
     left: 0px;
     top: 0px;
 }
-.workarea-wt{
+.simple-css-color-picker .workarea-wt{
     background-image: -webkit-linear-gradient(left, rgb(255,255,255) , rgba(255,255,255,0));
     background-image: -moz-linear-gradient(left, rgb(255,255,255) , rgba(255,255,255,0));
     background-image: -ms-linear-gradient(left, rgb(255,255,255) , rgba(255,255,255,0));
     background-image: linear-gradient(left, rgb(255,255,255) , rgba(255,255,255,0));
 }
 
-.workarea-color{
+.simple-css-color-picker .workarea-color{
     background: red;
     width: 100%;
     height: 100%;
@@ -84,7 +84,7 @@
     top: 0px;
 }
 
-.slider-hue{
+.simple-css-color-picker .slider-hue{
     position: relative;
     margin: 4px;
     width: 20px;
@@ -97,7 +97,7 @@
     background: -webkit-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
 }
 
-.slider-alpha{
+.simple-css-color-picker .slider-alpha{
     margin: 4px;
     position: relative;
 
@@ -111,7 +111,7 @@
     background: linear-gradient(left, rgba(0,0,0, 0), #000);
 }
 
-.choose-color{
+.simple-css-color-picker .choose-color{
     margin: 4px;
     width: 150px;
     height: 150px;
@@ -120,37 +120,37 @@
     position: relative;
 }
 
-.area-preview{
+.simple-css-color-picker .area-preview{
     margin-bottom: 8px;
     height: 30px;
     width: 100%;
 }
 
-.area-preview-before{
+.simple-css-color-picker .area-preview-before{
     cursor: pointer;
 }
 
-.area-preview-after{
+.simple-css-color-picker .area-preview-after{
     float: right;
 }
 
-.area-preview-before, .area-preview-after{
+.simple-css-color-picker .area-preview-before, .simple-css-color-picker .area-preview-after{
     margin: 4px;
     width: 45%;
     height: 100%;
     display: inline-block;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAIAAABvrngfAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjRBMzNFMkUzQzZCOTExRTI4MkE4RkM4MDdGMzY1MzUyIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjRBMzNFMkU0QzZCOTExRTI4MkE4RkM4MDdGMzY1MzUyIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NEEzM0UyRTFDNkI5MTFFMjgyQThGQzgwN0YzNjUzNTIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NEEzM0UyRTJDNkI5MTFFMjgyQThGQzgwN0YzNjUzNTIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7LQRIRAAAAJ0lEQVR42mKcOXMmAxikpaVBGEwMGACLEOP///8hrFmzZpGiESDAAD5QB9M10220AAAAAElFTkSuQmCC');
 }
-.area-preview-before > div, .area-preview-after > div{
+.simple-css-color-picker .area-preview-before > div, .simple-css-color-picker .area-preview-after > div{
     width: 100%;
     height: 100%;
     display: inline-block;
 }
-.area-buttons{
+.simple-css-color-picker .area-buttons{
     display: none;
 }
 
-.area-buttons span{
+.simple-css-color-picker .area-buttons span{
     margin: 4px 7px;
     padding: 7px 11px;
     display: inline-block;
@@ -159,7 +159,7 @@
     cursor: pointer;
 }
 
-.color-input{
+.simple-css-color-picker .color-input{
     width: 180px;
     margin: 4px;
     display: none;
