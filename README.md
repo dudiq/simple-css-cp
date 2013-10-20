@@ -1,28 +1,32 @@
-simple-css-cp
-=============
-
-jQuery, color-picker, javascript, colorpicker, linear-gradient, IE, support
-
-jquery color picker
-
-CSS3 color picker.
-without any png images, created by linear-gradient() style.
-
-if you need other template, just add new css rules for theme.
+## Simple color picker
 
 
+javascript color picker. 
 
-support: 
+
+This color picker is based on css linear gradient style. 
+
+without any images, png, div 1px, etc... 
+
+
+jquery used for selectors and events.
+
+
+### support
  
- color types: rgba, rgb, hsla, hsl, #hex, word.
+ - most of color types: rgba, rgb, hsla, hsl, #hex, word.
  
- browsers: all modern + IE8, 9
+ - browsers: all modern + IE8, 9
+
+if you need other template, just add new css rules for theme
+
+### how to use:
+
+just create new instance and use
 
 
-
-how to use:
-
-        var elPicker = new simplePicker($("#elPicker"), {
+```javascript
+        var cppInstance = new simplePicker($("#elPicker"), {
               cssTheme: "simple-css-cp-small", // if need some changes in template by css
               showButtons: false, // show/hide "apply"/"cancel" buttons
               showInput: true, // show/hide input field
@@ -43,38 +47,111 @@ how to use:
             }
         );
 
+```
 
-each instance of color picker have public methods:
+or just
 
-.destroy() - remove color picker from DOM and destroy itself
+```javascript
+        var cppInstance = new simplePicker($("#elPicker"));
+```
 
-.one(eventName, callback) - drop old callback and bind new. for example .one("onChange", function(color){});
+
+#### .destroy()
+
+Remove color picker from DOM and destroy itself
+
+
+#### .one(eventName, callback)
+
+drop old callback and set new. for example .one("onChange", function(color){});
 
 eventNames:
-"onChange", "onApply", "onApply", "onHide"
+   `onChange`, `onApply`, `onShow`, `onHide`
 
-.str2rgba("yellow") - return rgba object, like {r:10, g:10, b:255, a: 0.5}
 
-.rgb2hex({r:10, g:10, b:10}) - return HEX string from rgb object
+####.str2rgba("yellow") 
 
-.rgb2hsl({r:10, g:10, b:10}) - return hsl object
+return rgb colorObject
 
-.rgb2hsv({r:10, g:10, b:10}) - return hsv object
 
-.hsv2rgb({h: 10, s: 98, v: 1}) - return rgb object
+####.rgb2hex({r:10, g:10, b:10})
 
-.hsl2rgb("#ffffff") - return rgb object
+return HEX string
 
-.str2hex("yellow") - return hex color
 
-.hex2rgb("#0000ff") - return rgb object 
+####.rgb2hsl({r:10, g:10, b:10}) 
 
-.getColor() - return string color of selected value in picker
+return hsl colorObject
 
-.setColor("yellow") - set string color ("yellow", "#345", "rgba(10,10,20,0.5"), etc...)
 
-.setColorToBefore("yellow") - set string color to before area
+####.rgb2hsv({r:10, g:10, b:10}) 
 
-.hide() - hides picker
+return hsv colorObject
 
-.show("red") - show picker and set color, by default set "black" color
+
+####.hsv2rgb({h: 10, s: 98, v: 1}) 
+
+return rgb colorObject
+
+
+####.hsl2rgb("#ffffff") 
+
+return rgb colorObject
+
+
+####.str2hex("yellow") 
+
+return hex color
+
+
+####.hex2rgb("#0000ff")
+
+return rgb colorObject 
+
+
+####.getColor() 
+
+return string color of selected value in picker
+
+
+####.setColor("yellow") 
+
+set string color ("yellow", "#345", "rgba(10,10,20,0.5"), etc...)
+
+
+####.setColorToBefore("yellow") 
+
+set string color to before area
+
+
+####.hide() 
+
+hide picker
+
+
+####.show("red")
+
+show picker and set color, if argument is not defined, set "black" color
+
+
+
+### colorObject
+
+this is simple javascript object with redefined `.toString()` method. for example
+
+```javascript
+var colorObject = cpp.hex2rgb("#0000ff");
+
+colorObject.r; // return only red channel
+colorObject.toString(); // return string like "rgb(0, 0, 255)"
+
+var colorObject = cpp.str2rgba("red");
+colorObject.toString(); // return string like "rgb(0, 0, 255)"
+colorObject.a = 0.4;
+colorObject.toString(); // return string like "rgba(0, 0, 255, 0.4)"
+colorObject.a = undefined;
+colorObject.toString(); // return string like "rgb(0, 0, 255)"
+
+```
+
+jQuery, color-picker, javascript, colorpicker, linear-gradient, IE
