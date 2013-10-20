@@ -185,6 +185,8 @@ define(function (require) {
 
         (opt.showButtons !== false) && bindButtons.call(this, element.find(".area-buttons"));
 
+        bindDocumentEvents.call(this);
+
         bindValueChoose.call(this, element.find(".choose-color"), onColorChoose);
         bindValueChoose.call(this, element.find(".slider-alpha"), onAlphaChoose);
         bindValueChoose.call(this, element.find(".slider-hue"), onHueChoose, 360);
@@ -317,10 +319,19 @@ define(function (require) {
         this.oldColor = newColor;
     }
 
-    function onMouseSelect(offset, ev, width, height, dx, callback){
+    function onMouseSelect(ev, object){
+        if (!object) {
+            return;
+        }
+
+        var offset = object.offset;
         if (offset){
-            var left = ev.clientX - offset.left;
-            var top = ev.clientY - offset.top;
+            var width = object.width,
+                height = object.height,
+                dx = object.dx,
+                callback = object.callback,
+                left = ev.clientX - offset.left,
+                top = ev.clientY - offset.top;
 
             var pos = {
                 left: (left <= 0) ? 0 : (left >= width) ? width : left,
@@ -334,46 +345,49 @@ define(function (require) {
         }
     }
 
+    function bindDocumentEvents() {
+        var $doc = $(document),
+            self = this;
+        
+        if (!this.documentMouseUp) {
+            this.documentMouseUp = function(){
+                self._activeElement = null;
+            };
+
+            this.documentMouseMove = function(ev){
+                if (self._activeElement){
+                    onMouseSelect.call(self, ev, self._activeElement);
+                    ev.preventDefault();
+                }
+            };
+
+            $doc.on("mouseup", this.documentMouseUp);
+            $doc.on("mousemove", this.documentMouseMove);
+        }
+    }
+
     function bindValueChoose(el, callback, dx){
-        var offset,
-            self = this,
-            height,
-            $body = $(document.body),
-            canMove = false,
-            $doc = $(document),
-            width;
+        var obj = {callback: callback},
+            self = this;
 
-        dx = dx || 100;
-
-        this.documentMouseUp = function(){
-            canMove = false;
-        };
-
-        this.documentMouseMove = function(ev){
-            if (canMove){
-                onMouseSelect.call(self, offset, ev, width, height, dx, callback);
-                ev.preventDefault();
-            }
-        };
-
-        $doc.on("mouseup", this.documentMouseUp);
+        self._activeElement = null;
+        obj.dx = dx || 100;
 
         el.mousedown(function(ev){
-            canMove = true;
-            offset = el.offset();
-            width = el.width();
-            height = el.height();
+            obj.active = true;
+            obj.offset = el.offset();
+            obj.width = el.width();
+            obj.height = el.height();
+            self._activeElement = obj;
             self.element.focus();
-            onMouseSelect.call(self, offset, ev, width, height, dx, callback);
+            onMouseSelect.call(self, ev, obj);
             ev.preventDefault();
         });
-        $doc.on("mousemove", self.documentMouseMove);
     }
 
     function getType(color){
         var matches = (/rgba|hsla|rgb|hsl|#/).exec(color);
-        var type = (matches && matches[0]) || "word";
-        return type;
+        return (matches && matches[0]) || "word";
     }
 
     function getColorByMatch(reg, str){
@@ -516,8 +530,9 @@ define(function (require) {
     };
 
     p.destroy = function(){
-        this.documentMouseUp && $(document).off("mouseup", this.documentMouseUp);
-        this.documentMouseMove && $(document).off("mousemove", this.documentMouseMove);
+        var $doc = $(document); 
+        this.documentMouseUp && $doc.off("mouseup", this.documentMouseUp);
+        this.documentMouseMove && $doc.off("mousemove", this.documentMouseMove);
 
         this.helper.remove();
         this.element.remove();
