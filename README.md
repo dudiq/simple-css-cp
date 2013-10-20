@@ -41,6 +41,7 @@ each instance of color picker have public methods:
 .destroy() - remove color picker from DOM and destroy itself
 
 .one(eventName, callback) - drop old callback and bind new. for example .one("onChange", function(color){});
+
 eventNames:
 "onChange", "onApply", "onApply", "onHide"
 
