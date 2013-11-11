@@ -442,12 +442,14 @@ define(function (require) {
 
         var offset = object.offset;
         if (offset){
+            var parent = this.parent;
+
             var width = object.width,
                 height = object.height,
                 dx = object.dx,
                 callback = object.callback,
-                left = ev.clientX - offset.left,
-                top = ev.clientY - offset.top;
+                left = ev.clientX - offset.left + object.scrollLeft,
+                top = ev.clientY - offset.top + object.scrollTop;
 
             var pos = {
                 left: (left <= 0) ? 0 : (left >= width) ? width : left,
@@ -493,6 +495,8 @@ define(function (require) {
             obj.offset = el.offset();
             obj.width = el.width();
             obj.height = el.height();
+            obj.scrollTop = $doc.scrollTop();
+            obj.scrollLeft = $doc.scrollLeft();
             self._activeElement = obj;
             self.element.focus();
             onMouseSelect.call(self, ev, obj);
