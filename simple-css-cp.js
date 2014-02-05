@@ -13,6 +13,13 @@ define(function (require) {
 
     var $ = require('jquery');
 
+    var isMobile = new RegExp("mobile", "i").test(navigator.userAgent);
+
+    var start_ev = ((isMobile) ? "touchstart" : "mousedown");
+    var move_ev = ((isMobile) ? "touchmove" : "mousemove");
+    var end_ev = ((isMobile) ? "touchend" : "mouseup");
+
+
     var template = "<div class='simple-css-color-picker' tabIndex='-1'>" +
             "<div class='area-preview'>" +
                 "<div class='area-preview-before'><div class='area-preview-before-select'/></div>" +
@@ -444,12 +451,14 @@ define(function (require) {
         if (offset){
             var parent = this.parent;
 
-            var width = object.width,
+            var clientX = isMobile ? ev.originalEvent.touches[0].pageX : ev.clientX + object.scrollLeft,
+                clientY = isMobile ? ev.originalEvent.touches[0].pageY : ev.clientY + object.scrollTop,
+                width = object.width,
                 height = object.height,
                 dx = object.dx,
                 callback = object.callback,
-                left = ev.clientX - offset.left + object.scrollLeft,
-                top = ev.clientY - offset.top + object.scrollTop;
+                left = clientX - offset.left,
+                top = clientY - offset.top;
 
             var pos = {
                 left: (left <= 0) ? 0 : (left >= width) ? width : left,
@@ -478,8 +487,8 @@ define(function (require) {
                 }
             };
 
-            $doc.on("mouseup", this.documentMouseUp);
-            $doc.on("mousemove", this.documentMouseMove);
+            $doc.on(end_ev, this.documentMouseUp);
+            $doc.on(move_ev, this.documentMouseMove);
         }
     }
 
@@ -490,7 +499,7 @@ define(function (require) {
         self._activeElement = null;
         obj.dx = dx || 100;
 
-        el.mousedown(function(ev){
+        el.on(start_ev, function(ev){
             obj.active = true;
             obj.offset = el.offset();
             obj.width = el.width();
@@ -502,6 +511,7 @@ define(function (require) {
             onMouseSelect.call(self, ev, obj);
             ev.preventDefault();
         });
+//        el.on(move_ev, this.documentMouseMove);
     }
 
     function getType(color){
@@ -712,8 +722,8 @@ define(function (require) {
     };
 
     p.destroy = function(){
-        this.documentMouseUp && $doc && $doc.off("mouseup", this.documentMouseUp);
-        this.documentMouseMove && $doc && $doc.off("mousemove", this.documentMouseMove);
+        this.documentMouseUp && $doc && $doc.off(end_ev, this.documentMouseUp);
+        this.documentMouseMove && $doc && $doc.off(move_ev, this.documentMouseMove);
 
         this.helper.remove();
         this.element.remove();

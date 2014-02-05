@@ -171,6 +171,14 @@
     margin-bottom: 8px;
     height: 30px;
     width: 100%;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
 }
 
 .simple-css-color-picker .area-preview-before{
@@ -244,6 +252,13 @@
     width: 108px;
     height: 100px;
     margin: 2px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
 }
 
 .simple-css-cp-small .color-input {
@@ -258,6 +273,13 @@
 .simple-css-cp-small .slider-hue{
     height: 100px;
     margin: 2px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
 }
 
 .simple-css-cp-small .area-preview-before, .simple-css-cp-small .area-preview-after{
