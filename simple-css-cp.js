@@ -333,7 +333,7 @@
             this.workareaColor = element.find(".workarea-color");
             this.previewAfter = element.find(".area-preview-after-select");
             this.previewBefore = element.find(".area-preview-before-select");
-            this.previewBefore.on("click", function(){
+            this.previewBefore.on(start_ev, function(){
                 self.setColor($(this).data("color"));
             });
 
@@ -370,7 +370,7 @@
         function bindButtons(buttons){
             var self = this;
             buttons.show();
-            buttons.off("click").on("click", function(ev){
+            buttons.off(end_ev).on(end_ev, function(ev){
                 var action = $(ev.target).data("action");
                 if (action){
                     (action == "apply") && (self.options.onApply && self.options.onApply());
@@ -497,6 +497,7 @@
                     if (self._activeElement){
                         onMouseSelect.call(self, ev, self._activeElement);
                         ev.preventDefault();
+                        return false;
                     }
                 };
 
@@ -523,7 +524,9 @@
                 self.element.focus();
                 onMouseSelect.call(self, ev, obj);
                 ev.preventDefault();
+                return false;
             });
+
 //        el.on(move_ev, this.documentMouseMove);
         }
 

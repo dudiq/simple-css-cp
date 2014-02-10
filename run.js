@@ -2,6 +2,7 @@ define(function (require) {
     $(document).ready(function() {
 
         var simplePicker = require("simple-css-cp");
+        var logger = $("#logs");
 
         var pickerInstance = new simplePicker($("#elPicker"), {
             //cssTheme: "simple-css-cp-small",
@@ -19,6 +20,7 @@ define(function (require) {
                 output += arguments[i];
             }
             console.log(output);
+            logger.text(output);
         }
         
         pickerInstance.show("hsl(10, 40%, 50%)");

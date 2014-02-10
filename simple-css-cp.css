@@ -9,7 +9,15 @@
 .simple-css-color-picker{
     display: inline-block;
     outline: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
 }
 
 .simple-css-helper{
@@ -178,6 +186,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
 
 }
 
@@ -220,6 +230,9 @@
     display: none;
     outline: none;
     -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
+
 
     vertical-align: middle;
     background-color: #ffffff;
@@ -258,6 +271,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
 
 }
 
@@ -279,6 +294,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
 
 }
 
