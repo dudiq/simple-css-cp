@@ -20,7 +20,7 @@ define(function (require) {
                 output += arguments[i];
             }
             console.log(output);
-            logger.text(output);
+//            logger.text(output);
         }
         
         pickerInstance.show("hsl(10, 40%, 50%)");

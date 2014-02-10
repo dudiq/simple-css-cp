@@ -501,8 +501,8 @@
                     }
                 };
 
-                $doc.on(end_ev, this.documentMouseUp);
-                $doc.on(move_ev, this.documentMouseMove);
+                $body.on(end_ev, this.documentMouseUp);
+                $body.on(move_ev, this.documentMouseMove);
             }
         }
 
@@ -738,8 +738,8 @@
         };
 
         p.destroy = function(){
-            this.documentMouseUp && $doc && $doc.off(end_ev, this.documentMouseUp);
-            this.documentMouseMove && $doc && $doc.off(move_ev, this.documentMouseMove);
+            this.documentMouseUp && $body && $body.off(end_ev, this.documentMouseUp);
+            this.documentMouseMove && $body && $body.off(move_ev, this.documentMouseMove);
 
             this.helper.remove();
             this.element.remove();
