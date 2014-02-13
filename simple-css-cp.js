@@ -26,11 +26,11 @@
 
         var $ = require('jquery');
 
-        var isMobile = new RegExp("mobile", "i").test(navigator.userAgent);
+        var isTouch = ("ontouchend" in document);
 
-        var start_ev = ((isMobile) ? "touchstart" : "mousedown");
-        var move_ev = ((isMobile) ? "touchmove" : "mousemove");
-        var end_ev = ((isMobile) ? "touchend" : "mouseup");
+        var start_ev = ((isTouch) ? "touchstart" : "mousedown");
+        var move_ev = ((isTouch) ? "touchmove" : "mousemove");
+        var end_ev = ((isTouch) ? "touchend" : "mouseup");
 
 
         var template = "<div class='simple-css-color-picker' tabIndex='-1'>" +
@@ -464,8 +464,8 @@
             if (offset){
                 var parent = this.parent;
 
-                var clientX = isMobile ? ev.originalEvent.touches[0].pageX : ev.clientX + object.scrollLeft,
-                    clientY = isMobile ? ev.originalEvent.touches[0].pageY : ev.clientY + object.scrollTop,
+                var clientX = isTouch ? ev.originalEvent.touches[0].pageX : ev.clientX + object.scrollLeft,
+                    clientY = isTouch ? ev.originalEvent.touches[0].pageY : ev.clientY + object.scrollTop,
                     width = object.width,
                     height = object.height,
                     dx = object.dx,
