@@ -1,11 +1,9 @@
 /**
-* jQuery Simple CSS Color Picker
+* Simple CSS Color Picker
 *
 * Support : rgba, rgb, hsla, hsl, #hex, word
 *
-* @version: 0.1
-* @author: dudiq
-* @licence: MIT http://www.opensource.org/licenses/mit-license.php
+* licence: MIT, dudiq 2014
 *
 **/
 
@@ -84,7 +82,6 @@
             var hasAlpha = !isNaN(this.a);
             var isRgb = (this.r !== undefined);
             var isHsv = (this.v !== undefined);
-            var pertange = isRgb ? "" : "%";
             var prefix = isRgb ? ((hasAlpha) ? "rgba(" : "rgb(") :
                 ((hasAlpha) ? "hsla(" : "hsl(");
 
@@ -121,14 +118,15 @@
             }
         }
 
+        function dublicate(res){
+            return res + "" + res;
+        }
+
         function hex2rgb(hex) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             if (!result) {
                 (result = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex));
                 if (result) {
-                    function dublicate(res){
-                        return res + "" + res;
-                    }
                     result[1] = dublicate(result[1]);
                     result[2] = dublicate(result[2]);
                     result[3] = dublicate(result[3]);
