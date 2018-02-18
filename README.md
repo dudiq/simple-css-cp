@@ -155,3 +155,5 @@ colorObject.toString(); // return string like "rgb(0, 0, 255)"
 ```
 
 jQuery, color-picker, javascript, colorpicker, linear-gradient, IE
+
+MIT idudiq 2014
